@@ -11,7 +11,7 @@ function UserControll() {
 
     let jsx = <NotLogged />;
 
-    if (!userLogin)
+    if (userLogin)
         jsx = (
             <div className="hidden lg:block">
                 <Logged userLogin={userLogin} />
