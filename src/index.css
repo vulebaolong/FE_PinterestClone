@@ -1,0 +1,45 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.ant-modal .ant-modal-content {
+    border-radius: 32px;
+}
+
+/*! SCROLLBAR - start */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: rgba(100, 116, 139, 0.502) rgba(100, 116, 139, 0.161);
+}
+*::-webkit-scrollbar {
+	width: 0.375rem;
+}
+/* CSS cho thanh cuộn ngang */
+*::-webkit-scrollbar:horizontal {
+	height: 0.375rem;
+}
+*::-webkit-scrollbar-track,
+*::-webkit-scrollbar-track:horizontal,
+*::-webkit-scrollbar-corner {
+	background-color: rgba(100, 116, 139, 0.161);
+}
+*::-webkit-scrollbar-thumb,
+*::-webkit-scrollbar-thumb:horizontal {
+	border-radius: 5px;
+	background-color: rgba(100, 116, 139, 0.502);
+}
+/* SCROLLBAR - end */
+
+
+.my-masonry-grid {
+    display: -webkit-box; /* Not needed if autoprefixing */
+    display: -ms-flexbox; /* Not needed if autoprefixing */
+    display: flex;
+    margin-left: -30px; /* gutter size offset */
+    width: auto;
+  }
+  .my-masonry-grid_column {
+    padding-left: 30px; /* gutter size */
+    background-clip: padding-box;
+  }
+  
