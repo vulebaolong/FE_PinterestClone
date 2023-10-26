@@ -34,10 +34,10 @@ function ProfilePage() {
                 </p>
             </div>
             <div className="flex items-center justify-center gap-2 py-3 mt-7">
-                <Button className={isPageCreated ? "bg-gray-400" : ""} onClick={handleCreated} type="secondary">
+                <Button className={isPageCreated ? "!bg-gray-400" : ""} onClick={handleCreated} type="secondary">
                     Đã tạo
                 </Button>
-                <Button className={isPageCreated ? "" : "bg-gray-400"} onClick={handleSaved} type="secondary">
+                <Button className={isPageCreated ? "" : "!bg-gray-400"} onClick={handleSaved} type="secondary">
                     Đã lưu
                 </Button>
             </div>

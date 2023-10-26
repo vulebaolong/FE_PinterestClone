@@ -1,8 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import MasonryLayer from "../../components/Masonry/MasonryLayer";
-import { imageApi } from "../../api/imageApi";
-import { useSelector } from "react-redux";
-import { RootState } from "../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { DispatchType, RootState } from "../../redux/store";
+import { setImgListHomePageMID, setImgListSavedHomePageMID } from "../../redux/slices/imageSlice";
 
 export interface I_img {
     imageId: number;
@@ -18,29 +18,27 @@ export interface I_img_users {
 }
 
 function HomePage() {
-    const [imgList, setImgList] = useState<I_img[]>([]);
     const { userLogin } = useSelector((state: RootState) => state.userManagementSlice);
+    const { imgListHomePage } = useSelector((state: RootState) => state.imageSlice);
+
+    const dispatch: DispatchType = useDispatch();
 
     useEffect(() => {
         const fetchData = async () => {
             if (userLogin) {
-                const { data } = await imageApi.getImgListSaved();
-                console.log(data);
-                setImgList(data.data);
+                dispatch(setImgListSavedHomePageMID());
             }
             if (!userLogin) {
-                const { data } = await imageApi.getImgList();
-                console.log(data);
-                setImgList(data.data);
+                dispatch(setImgListHomePageMID());
             }
         };
         fetchData();
     }, [userLogin]);
 
     return (
-        <div className="container">
+        <div className="container pt-5">
             <p className="text-base font-semibold text-center text-text">Dành cho bạn</p>
-            <MasonryLayer imgList={imgList} />
+            <MasonryLayer imgList={imgListHomePage} />
         </div>
     );
 }

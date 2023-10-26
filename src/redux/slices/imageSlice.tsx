@@ -6,6 +6,7 @@ import { navigate } from "../../helpers/navigate";
 
 const initialState = {
     isPageCreated: false,
+    imgListHomePage: [],
 };
 
 const imageSlice = createSlice({
@@ -15,10 +16,13 @@ const imageSlice = createSlice({
         setIsPageCreated: (state, { payload }) => {
             state.isPageCreated = payload;
         },
+        setImgListHomePage: (state, { payload }) => {
+            state.imgListHomePage = payload;
+        },
     },
 });
 
-export const { setIsPageCreated } = imageSlice.actions;
+export const { setIsPageCreated, setImgListHomePage } = imageSlice.actions;
 
 export default imageSlice.reducer;
 
@@ -35,6 +39,36 @@ export const createImageMID = (requestData: FormData) => {
             navigate("/profile");
 
             dispatch(setIsPageCreated(true));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+};
+
+//setImgListSavedHomePageMID
+export const setImgListSavedHomePageMID = () => {
+    return async (dispatch: DispatchType) => {
+        try {
+            const { data, status } = await imageApi.getImgListSaved();
+
+            console.log("setImgListSavedHomePageMID", { data, status });
+
+            dispatch(setImgListHomePage(data.data));
+        } catch (error) {
+            console.log(error);
+        }
+    };
+};
+
+//setImgListHomePageMID
+export const setImgListHomePageMID = () => {
+    return async (dispatch: DispatchType) => {
+        try {
+            const { data, status } = await imageApi.getImgList();
+
+            console.log("setImgListHomePageMID", { data, status });
+
+            dispatch(setImgListHomePage(data.data));
         } catch (error) {
             console.log(error);
         }
