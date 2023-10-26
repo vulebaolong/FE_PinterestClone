@@ -1,5 +1,6 @@
 import Masonry from "react-masonry-css";
-import Card from "./Card";
+import MasonryItem from "./MasonryItem";
+import { I_img } from "../../pages/HomePage/HomePage";
 
 const breakpointColumnsObj = {
     default: 6, // Số cột mặc định
@@ -10,16 +11,16 @@ const breakpointColumnsObj = {
     1536: 5,
 };
 interface I_props {
-    items: object[];
+    imgList: I_img[];
 }
-function MasonryLayout({ items }: I_props) {
+function MasonryLayer({ imgList }: I_props) {
     return (
         <Masonry breakpointCols={breakpointColumnsObj} className="my-masonry-grid" columnClassName="my-masonry-grid_column">
-            {items.map((item, index) => (
-                <Card index={index} key={index} />
+            {imgList.map((image) => (
+                <MasonryItem image={image} key={image.imageId} />
             ))}
         </Masonry>
     );
 }
 
-export default MasonryLayout;
+export default MasonryLayer;

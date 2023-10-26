@@ -1,26 +1,31 @@
-export interface I_login {
-    username: string;
+export interface I_login_req {
+    userName: string;
     password: string;
 }
 
-export interface I_register {
+export interface I_register_req {
     fullName: string;
-    username: string;
+    userName: string;
     password: string;
+    email: string;
+    phoneNumber: string;
+}
+
+export interface I_register_res {
+    fullName: string;
+    userName: string;
     email: string;
     phoneNumber: string;
 }
 
 export interface I_userLogin {
-    id: string;
-    username: string;
+    userId: number;
+    userName: string;
+    fullName: string;
     email: string;
     phoneNumber: string;
-    fullName: string;
-    accessToken: string;
-    userType: string;
-    avatar: string;
-    bannerProfile: string;
+    iat: number;
+    exp: number;
 }
 
 export interface I_PropLogged {

@@ -5,8 +5,8 @@ import { Form, Input } from "antd";
 import { useDispatch, useSelector } from "react-redux";
 import Button from "../../Button/Button";
 import { DispatchType, RootState } from "../../../redux/store";
-import { I_register } from "../../../interfaces/userManagementInterface";
-import { setIsPageLoginREDU } from "../../../redux/slices/userManagementSlice";
+import { I_register_req } from "../../../interfaces/userManagementInterface";
+import { registerMID, setIsPageLoginREDU } from "../../../redux/slices/userManagementSlice";
 import LogoIcon from "../../Logo/LogoIcon";
 
 function Register() {
@@ -16,12 +16,9 @@ function Register() {
 
     const dispatch: DispatchType = useDispatch();
 
-    const onFinish = (values: I_register) => {
+    const onFinish = (values: I_register_req) => {
         console.log("Success:", values);
-        // dispatch({
-        //     type: "registerSaga",
-        //     payload: values,
-        // });
+        dispatch(registerMID(values));
     };
 
     const classInput = `bg-[#1618230f] px-[20px] py-[12px] w-full transition outline-none rounded-[44px] h-[44px] text-sm font-inter
@@ -62,7 +59,7 @@ function Register() {
 
                     {/* TÀI KHOẢN */}
                     <Form.Item
-                        name="username"
+                        name="userName"
                         rules={[
                             {
                                 required: true,

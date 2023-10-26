@@ -6,6 +6,7 @@ import Login from "./Login";
 import Register from "./Register";
 import { DispatchType, RootState } from "../../../redux/store";
 import { setIsOpenModalAuthREDU } from "../../../redux/slices/modalSlice";
+import { setAutofillREDU } from "../../../redux/slices/userManagementSlice";
 
 function ModalAuth() {
     const { isOpenModalAuth } = useSelector((state: RootState) => state.modalSlice);
@@ -14,6 +15,7 @@ function ModalAuth() {
     const dispatch: DispatchType = useDispatch();
 
     const handleCancel = () => {
+        dispatch(setAutofillREDU({ userName: "", password: "" }));
         dispatch(setIsOpenModalAuthREDU(false));
     };
 

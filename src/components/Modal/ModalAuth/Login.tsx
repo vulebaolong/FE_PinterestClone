@@ -7,10 +7,10 @@ import { Link } from "react-router-dom";
 import { useEffect } from "react";
 import { Store } from "antd/es/form/interface";
 import { DispatchType, RootState } from "../../../redux/store";
-import { I_login } from "../../../interfaces/userManagementInterface";
+import { I_login_req } from "../../../interfaces/userManagementInterface";
 // import { setAutofillREDU, setIsPageLoginREDU } from "../../../redux/slices/userManagementSlice";
 import Button from "../../Button/Button";
-import { setAutofillREDU, setIsPageLoginREDU } from "../../../redux/slices/userManagementSlice";
+import { loginMID, setAutofillREDU, setIsPageLoginREDU } from "../../../redux/slices/userManagementSlice";
 import LogoIcon from "../../Logo/LogoIcon";
 
 function Login() {
@@ -22,12 +22,9 @@ function Login() {
 
     const dispatch: DispatchType = useDispatch();
 
-    const onFinish = (values: I_login) => {
+    const onFinish = (values: I_login_req) => {
         console.log("Success:", values);
-        // dispatch({
-        //     type: "loginSaga",
-        //     payload: values,
-        // });
+        dispatch(loginMID(values));
     };
 
     const classInput = `bg-[#1618230f] px-[20px] py-[12px] w-full transition outline-none rounded-[44px] h-[44px] text-sm font-inter
@@ -43,11 +40,11 @@ function Login() {
     useEffect(() => form.resetFields(), [autofill, form]);
 
     const handleCustomer = () => {
-        dispatch(setAutofillREDU({ username: "khachhang", password: "123456" }));
+        dispatch(setAutofillREDU({ userName: "khachhang", password: "123456" }));
     };
 
     const handleAdmin = () => {
-        dispatch(setAutofillREDU({ username: "quantri", password: "123456" }));
+        dispatch(setAutofillREDU({ userName: "quantri", password: "123456" }));
     };
 
     return (
@@ -62,7 +59,7 @@ function Login() {
                 <Form form={form} layout={"vertical"} onFinish={onFinish} initialValues={initialValues} autoComplete="off">
                     {/* TÀI KHOẢN */}
                     <Form.Item
-                        name="username"
+                        name="userName"
                         rules={[
                             {
                                 required: true,

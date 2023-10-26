@@ -27,7 +27,7 @@ function Button({ name, htmlFor, children, type, className, onClick, disabled = 
     }
 
     if (type === "circle_primary") {
-        classType = "bg-primary hover:bg-primary_hover active:bg-primary_active text-text text-base font-semibold p-4";
+        classType = "bg-primary hover:bg-primary_hover active:bg-primary_active text-text text-base font-semibold p-4 aspect-square";
     }
 
     if (disabled === true) {
