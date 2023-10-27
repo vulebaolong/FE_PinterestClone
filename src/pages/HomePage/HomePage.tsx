@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import MasonryLayer from "../../components/Masonry/MasonryLayer";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../redux/store";
-import { setImgListHomePageMID, setImgListSavedHomePageMID } from "../../redux/slices/imageSlice";
+import { setImgListHomePageMID } from "../../redux/slices/imageSlice";
+import Loading from "../../components/Loading/Loading";
 
 export interface I_img {
     imageId: number;
@@ -18,26 +19,24 @@ export interface I_img_users {
 }
 
 function HomePage() {
-    const { userLogin } = useSelector((state: RootState) => state.userManagementSlice);
     const { imgListHomePage } = useSelector((state: RootState) => state.imageSlice);
+
+    const { isLoadingPage } = useSelector((state: RootState) => state.loadingSlice);
+
+    const { userLogin } = useSelector((state: RootState) => state.userManagementSlice);
 
     const dispatch: DispatchType = useDispatch();
 
     useEffect(() => {
         const fetchData = async () => {
-            if (userLogin) {
-                dispatch(setImgListSavedHomePageMID());
-            }
-            if (!userLogin) {
-                dispatch(setImgListHomePageMID());
-            }
+            dispatch(setImgListHomePageMID("page"));
         };
         fetchData();
-    }, [userLogin]);
+    }, [userLogin, dispatch]);
 
     return (
-        <div className="container pt-5">
-            <p className="text-base font-semibold text-center text-text">Dành cho bạn</p>
+        <div className="container">
+            {isLoadingPage && <Loading />}
             <MasonryLayer imgList={imgListHomePage} />
         </div>
     );

@@ -1,3 +1,4 @@
+import { Avatar } from "antd";
 import { ACCESS_TOKEN, USER_LOGIN } from "../../contants/userContants";
 import { lcStorage } from "../../helpers/localStorage";
 import { navigate } from "../../helpers/navigate";
@@ -18,8 +19,13 @@ function Logged({ userLogin }: { userLogin: I_userLogin }) {
     return (
         <div className="flex items-center gap-2">
             <div className="max-w-[200px] cursor-pointer" onClick={handleProfile}>
-                <p className="text-base font-bold truncate text-text ">{userLogin.fullName}</p>
-                <p className="text-sm font-normal truncate text-text">{userLogin.email}</p>
+                <div className="flex items-center gap-2">
+                    <Avatar className="bg-[#e9e9e9] flex-shrink-0 flex items-center justify-between" size={30}>
+                        <span className="text-text">{userLogin.userName.at(0)}</span>
+                    </Avatar>
+                    <p className="text-base font-bold truncate text-text ">{userLogin.fullName}</p>
+                </div>
+                <p className="ml-2 text-sm font-normal truncate text-text">{userLogin.email}</p>
             </div>
             <Button onClick={handleClickLogout} type="secondary">
                 Thoát

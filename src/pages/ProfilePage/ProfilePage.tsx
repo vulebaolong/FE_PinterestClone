@@ -21,7 +21,7 @@ function ProfilePage() {
     return (
         <>
             <div className="flex flex-col items-center justify-center gap-2">
-                <Avatar className="bg-[#e9e9e9]" size={{ xs: 80, sm: 90, md: 100, lg: 110, xl: 120, xxl: 500 }}>
+                <Avatar className="bg-[#e9e9e9]" size={{ xs: 80, sm: 90, md: 100, lg: 110, xl: 120, xxl: 130 }}>
                     <span className="text-text">{userLogin.fullName.at(0)}</span>
                 </Avatar>
                 <h1 className="text-4xl font-semibold">{userLogin.fullName}</h1>

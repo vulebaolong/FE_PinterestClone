@@ -7,25 +7,52 @@ import { useState } from "react";
 import { RcFile, UploadProps } from "antd/es/upload";
 import { getBase64 } from "../../helpers/antdHelper";
 import { I_createImage_req } from "../../interfaces/imageInterface";
-import { DispatchType } from "../../redux/store";
-import { useDispatch } from "react-redux";
+import { DispatchType, RootState } from "../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
 import { createImageMID } from "../../redux/slices/imageSlice";
+import { setIsOpenModalAuthREDU } from "../../redux/slices/modalSlice";
 
 function CreateImagePage() {
     const dispatch: DispatchType = useDispatch();
+
+    const { isLoadingBtn } = useSelector((state: RootState) => state.loadingSlice);
+
+    const { userLogin } = useSelector((state: RootState) => state.userManagementSlice);
 
     const handleClick = () => {
         navigate(-1);
     };
 
+    const checkLogin = () => {
+        if (userLogin) return true;
+        if (!userLogin) return false;
+    };
+
     const [form] = Form.useForm();
+
+    const onFinishFailed = () => {
+        if (!checkLogin()) {
+            dispatch(setIsOpenModalAuthREDU(true));
+            return;
+        }
+    };
+
     const onFinish = async (values: I_createImage_req) => {
+        if (!checkLogin()) {
+            dispatch(setIsOpenModalAuthREDU(true));
+            return;
+        }
+
         console.log(values);
+
         const formData = new FormData();
+
         formData.append("imageName", values.imageName);
         formData.append("file", values.file.file.originFileObj);
+
         console.log(formData.get("imageName"));
         console.log(formData.get("file"));
+
         dispatch(createImageMID(formData));
     };
 
@@ -59,7 +86,7 @@ function CreateImagePage() {
                 </Button>
             </div>
             <div className="max-w-lg mx-auto">
-                <Form form={form} layout="vertical" onFinish={onFinish}>
+                <Form form={form} layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed}>
                     {/* NAME IMAGE */}
                     <Form.Item
                         label={<span className="text-base font-bold">Tên ảnh</span>}
@@ -67,7 +94,7 @@ function CreateImagePage() {
                         rules={[
                             {
                                 required: true,
-                                message: "Vui lòng nhập tên khoá học",
+                                message: "Vui lòng nhập tên hình ảnh",
                             },
                         ]}
                         hasFeedback
@@ -121,7 +148,10 @@ function CreateImagePage() {
 
                     {/* BUTTON */}
                     <Form.Item>
-                        <Button type="primary">Thêm hình ảnh</Button>
+                        <Button disabled={isLoadingBtn} type="primary">
+                            {isLoadingBtn && <LoadingOutlined />}
+                            <span>Thêm hình ảnh</span>
+                        </Button>
                     </Form.Item>
                 </Form>
             </div>

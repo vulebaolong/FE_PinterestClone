@@ -9,6 +9,9 @@ import { imageApi } from "./../../api/imageApi";
 import { useParams } from "react-router-dom";
 import { I_img } from "../HomePage/HomePage";
 import { success } from "../../helpers/message";
+import { useDispatch, useSelector } from "react-redux";
+import { DispatchType, RootState } from "../../redux/store";
+import { setIsOpenModalAuthREDU } from "../../redux/slices/modalSlice";
 
 export interface I_comment {
     commentId: number;
@@ -27,9 +30,13 @@ export interface I_comment_req {
 }
 
 function DetailPage() {
+    const dispatch: DispatchType = useDispatch();
+
     const [img, setImg] = useState<I_img>();
 
     const [listComment, setListComment] = useState<I_comment[]>([]);
+
+    const { userLogin } = useSelector((state: RootState) => state.userManagementSlice);
 
     const handleClick = () => {
         navigate(-1);
@@ -60,25 +67,50 @@ function DetailPage() {
         fetchComment();
     }, [id]);
 
+    const checkLogin = () => {
+        if (userLogin) return true;
+        if (!userLogin) return false;
+    };
+
     const handleClickSave = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.stopPropagation();
+
+        if (!checkLogin()) {
+            dispatch(setIsOpenModalAuthREDU(true));
+            return;
+        }
+
         console.log(`lưu ${img?.imageId}`);
+
         if (!img?.imageId) return;
+
         await imageApi.saveAndUnSaveImage(img?.imageId);
+
         success("Lưu hình ảnh thành công");
+
         fetchOneImage();
     };
 
     const handleClickUnSave = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
         e.stopPropagation();
+
         console.log(`bỏ lưu ${img?.imageId}`);
+
         if (!img?.imageId) return;
+
         await imageApi.saveAndUnSaveImage(img?.imageId);
+
         success("Bỏ lưu hình ảnh thành công");
+
         fetchOneImage();
     };
 
     const handleComment = async () => {
+        if (!checkLogin()) {
+            dispatch(setIsOpenModalAuthREDU(true));
+            return;
+        }
+        
         const commentEl = document.querySelector(".comment") as HTMLInputElement;
 
         if (!commentEl) return;
@@ -113,7 +145,7 @@ function DetailPage() {
             </div>
             <div className="flex w-[1016px] min-h-[500px] mx-auto rounded-[32px] shadow-[rgba(0,0,0,0.1)_0px_1px_20px_0px] overflow-hidden">
                 <div className="flex-shrink-0 w-1/2 basis-1/2">{img?.imageUrl && <img className="w-full h-full" src={`${MAIN_URL}/public/img/${img?.imageUrl}`} alt="" />}</div>
-                <div className="flex-shrink-0 w-1/2 basis-1/2 flex flex-col">
+                <div className="flex flex-col flex-shrink-0 w-1/2 basis-1/2">
                     <div className="text-right p-7">
                         {img?.saved === 0 ? (
                             <Button onClick={handleClickSave} type="primary">
@@ -142,12 +174,13 @@ function DetailPage() {
                                 {listComment.map((comment) => {
                                     return <ItemComment comment={comment} key={comment.commentId} />;
                                 })}
+                                {listComment.length === 0 ? <p className="text-center">Hãy là người comment đầu tiên</p> : ""}
                             </div>
                         </div>
                         <hr className="my-5" />
                         <div className="px-7 pb-7">
                             <p className="text-xl font-semibold break-words text-text">
-                                <span>10 </span>
+                                <span>{listComment.length} </span>
                                 <span>Nhận xét</span>
                             </p>
                         </div>

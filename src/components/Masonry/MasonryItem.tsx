@@ -4,11 +4,15 @@ import { navigate } from "../../helpers/navigate";
 import { MouseEvent } from "react";
 import { I_img } from "../../pages/HomePage/HomePage";
 import { imageApi } from "../../api/imageApi";
-import { success } from "../../helpers/message";
-import { DispatchType } from "../../redux/store";
-import { useDispatch } from "react-redux";
-import { setImgListSavedHomePageMID } from "../../redux/slices/imageSlice";
+import { error, success } from "../../helpers/message";
+import { DispatchType, RootState } from "../../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+import { setImgListCreatedPageMID, setImgListHomePageMID, setImgListSavedPageMID } from "../../redux/slices/imageSlice";
 import { MAIN_URL } from "../../contants/apiContants";
+import { LoadingOutlined } from "@ant-design/icons";
+import { setIsLoadingBtnREDU } from "../../redux/slices/loadingSlice";
+import { useLocation } from "react-router-dom";
+import { setIsOpenModalAuthREDU } from "../../redux/slices/modalSlice";
 
 interface I_props {
     image: I_img;
@@ -16,23 +20,92 @@ interface I_props {
 function MasonryItem({ image }: I_props) {
     const dispatch: DispatchType = useDispatch();
 
+    const { pathname } = useLocation();
+
+    const { isLoadingBtn } = useSelector((state: RootState) => state.loadingSlice);
+
+    const { isPageCreated } = useSelector((state: RootState) => state.imageSlice);
+
+    const { userLogin } = useSelector((state: RootState) => state.userManagementSlice);
+
     const handleClick = () => {
         navigate(`detail/${image.imageId}`);
     };
 
-    const handleClickSave = async (e: MouseEvent) => {
-        e.stopPropagation();
-        console.log(`lưu ${image.imageId}`);
-        await imageApi.saveAndUnSaveImage(image.imageId);
-        success("Lưu hình ảnh thành công");
-        dispatch(setImgListSavedHomePageMID());
+    const checkLogin = () => {
+        if (userLogin) return true;
+        if (!userLogin) return false;
     };
+
+    const handleClickSave = async (e: MouseEvent) => {
+        try {
+            e.stopPropagation();
+
+            if (!checkLogin()) {
+                dispatch(setIsOpenModalAuthREDU(true));
+                return;
+            }
+
+            console.log(`lưu ${image.imageId}`);
+
+            dispatch(setIsLoadingBtnREDU(true));
+
+            await imageApi.saveAndUnSaveImage(image.imageId);
+
+            success("Lưu hình ảnh thành công");
+
+            if (pathname === "/profile" && isPageCreated === false) return dispatch(setImgListSavedPageMID("update"));
+
+            if (pathname === "/profile" && isPageCreated === true) return dispatch(setImgListCreatedPageMID("update"));
+
+            if (pathname === "/") return dispatch(setImgListHomePageMID("update"));
+        } catch (err) {
+            error("Lưu hình ảnh không thành công");
+        } finally {
+            dispatch(setIsLoadingBtnREDU(false));
+        }
+    };
+
     const handleClickUnSave = async (e: MouseEvent) => {
-        e.stopPropagation();
-        console.log(`bỏ lưu ${image.imageId}`);
-        await imageApi.saveAndUnSaveImage(image.imageId);
-        success("Bỏ lưu hình ảnh thành công");
-        dispatch(setImgListSavedHomePageMID());
+        try {
+            e.stopPropagation();
+
+            console.log(`bỏ lưu ${image.imageId}`);
+
+            dispatch(setIsLoadingBtnREDU(true));
+
+            await imageApi.saveAndUnSaveImage(image.imageId);
+
+            success("Bỏ lưu hình ảnh thành công");
+
+            if (pathname === "/profile" && isPageCreated === false) return dispatch(setImgListSavedPageMID("update"));
+
+            if (pathname === "/profile" && isPageCreated === true) return dispatch(setImgListCreatedPageMID("update"));
+
+            if (pathname === "/") return dispatch(setImgListSavedHomePageMID("update"));
+        } catch (err) {
+            error("Bỏ lưu hình ảnh không thành công");
+        } finally {
+            dispatch(setIsLoadingBtnREDU(false));
+        }
+    };
+
+    const handleClickDelete = async (e: MouseEvent) => {
+        try {
+            e.stopPropagation();
+
+            dispatch(setIsLoadingBtnREDU(true));
+
+            if (pathname === "/profile" && isPageCreated === true) await imageApi.deleteImage(image.imageId);
+
+            success("Xoá hình ảnh thành công");
+
+            if (pathname === "/profile" && isPageCreated === true) return dispatch(setImgListCreatedPageMID("update"));
+        } catch (err) {
+            error("Xoá hình ảnh không thành công");
+        } finally {
+            dispatch(setIsLoadingBtnREDU(false));
+        }
     };
 
     return (
@@ -41,15 +114,25 @@ function MasonryItem({ image }: I_props) {
                 {/* <img className="object-cover w-full" src={`https://picsum.photos/id/${Math.floor(Math.random() * 100) + 1}/200/${Math.floor(Math.random() * 280) + 200}`} alt="" /> */}
                 <img className="object-cover w-full" src={`${MAIN_URL}/public/img/${image.imageUrl}`} alt="" />
                 <div className={`absolute top-0 left-0 w-full h-full bg-black/30 opacity-0 ${style.overLay} transition`}>
-                    {image.saved === 0 ? (
-                        <Button onClick={handleClickSave} className="absolute top-3 right-3" type="primary">
-                            Lưu
-                        </Button>
-                    ) : (
-                        <Button onClick={handleClickUnSave} className="absolute top-3 right-3" type="secondary">
-                            Bỏ lưu
-                        </Button>
-                    )}
+                    <div className="flex justify-end gap-2 p-3">
+                        {image.saved === 0 ? (
+                            <Button onClick={handleClickSave} className="" type="primary">
+                                {isLoadingBtn && <LoadingOutlined />}
+                                <span>Lưu</span>
+                            </Button>
+                        ) : (
+                            <Button disabled={isLoadingBtn} onClick={handleClickUnSave} className="" type="secondary">
+                                {isLoadingBtn && <LoadingOutlined />}
+                                <span>Bỏ lưu</span>
+                            </Button>
+                        )}
+                        {isPageCreated && (
+                            <Button disabled={isLoadingBtn} onClick={handleClickDelete} className="" type="secondary">
+                                {isLoadingBtn && <LoadingOutlined />}
+                                <span>Xoá</span>
+                            </Button>
+                        )}
+                    </div>
                 </div>
             </div>
             <div className="pt-2 pb-4 px-[6px]">

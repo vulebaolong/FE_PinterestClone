@@ -8,9 +8,6 @@ export const imageApi = {
     getImgList: () => {
         return axios.get(`/image/list`);
     },
-    getImgListSaved: () => {
-        return axios.get(`/image/list-saved`);
-    },
     saveAndUnSaveImage: (imageId: number) => {
         return axios.get(`/image/save-and-unsave/${imageId}`);
     },
@@ -22,5 +19,14 @@ export const imageApi = {
     },
     createComment: (dataComment: I_comment_req) => {
         return axios.post(`/image/comment`, dataComment);
+    },
+    deleteImage: (imageId: number) => {
+        return axios.delete(`/image/delete/${imageId}`);
+    },
+    searchImage: (nameImage: string) => {
+        return axios.get(`/image/search?searchText=${nameImage}`);
+    },
+    searchImageInSavedPage: (nameImage: string) => {
+        return axios.get(`/image/search-saved?searchText=${nameImage}`);
     },
 };

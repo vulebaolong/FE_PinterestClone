@@ -1,124 +1,97 @@
-import { Empty, Input, Popover } from "antd";
+import { Input } from "antd";
 import { SearchOutlined, LoadingOutlined } from "@ant-design/icons";
-import { ChangeEvent, MouseEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
+import { imageApi } from "../../api/imageApi";
+import { useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { DispatchType, RootState } from "../../redux/store";
+import {
+    setImgListCreatedPage,
+    setImgListCreatedPageMID,
+    setImgListHomePage,
+    setImgListHomePageMID,
+    setImgListSavedHomePageMID,
+    setImgListSavedPage,
+    setImgListSavedPageMID,
+} from "../../redux/slices/imageSlice";
 // import { courseApi } from "../../api/courseApi";
 // import { I_resultSearch } from "../../interfaces/courseManagementInterface";
 // import { navigate } from "../../helpers/navigate";
 // import { DEBOUNCE_TIMEOUT } from "../../contants/courseManagementContants";
 
 function Search() {
-    const [resultSearch, setResultSearch] = useState<I_resultSearch>([]);
-    const [isOpenPopupUser, setIsOpenPopupUser] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-    const [inputValue, setInputValue] = useState("");
+    const dispatch: DispatchType = useDispatch();
 
-    const handleOpenChange = (newOpen: boolean) => {
-        setIsOpenPopupUser(newOpen);
-    };
+    const { pathname } = useLocation();
+
+    const { isPageCreated } = useSelector((state: RootState) => state.imageSlice);
+
+    const [isLoading, setIsLoading] = useState(false);
+
+    const [inputValue, setInputValue] = useState("");
 
     const onChange = (e: ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
     };
 
-    // useEffect(() => {
-    //     const timerId = setTimeout(async () => {
-    //         if (isLoading) return;
+    useEffect(() => {
+        const timerId = setTimeout(async () => {
+            console.log(inputValue);
 
-    //         if (inputValue === "") return setIsOpenPopupUser(false);
+            if (isLoading) return;
 
-    //         console.log(inputValue);
+            if (inputValue.trim() === "") {
+                if (pathname === "/profile" && isPageCreated === false) return dispatch(setImgListSavedPageMID("page"));
 
-    //         setIsLoading(true);
+                if (pathname === "/profile" && isPageCreated === true) return dispatch(setImgListCreatedPageMID("page"));
 
-    //         try {
-    //             const courseName = encodeURIComponent(inputValue);
+                if (pathname === "/") return dispatch(setImgListHomePageMID("page"));
+            }
 
-    //             const { data, status } = await courseApi.searchCourseByName(courseName);
+            setIsLoading(true);
 
-    //             console.log("Call API - searchCourseByName", { data, status });
+            try {
+                const imageName = encodeURIComponent(inputValue);
 
-    //             setResultSearch(data.result.data);
+                if (pathname === "/") {
+                    const { data } = await imageApi.searchImage(imageName);
+                    console.log("Home Page", data);
+                    dispatch(setImgListHomePage(data.data));
+                    return;
+                }
 
-    //             setIsOpenPopupUser(true);
-    //         } finally {
-    //             setIsLoading(false);
-    //         }
-    //     }, DEBOUNCE_TIMEOUT);
+                if (pathname === "/profile" && isPageCreated === false) {
+                    const { data } = await imageApi.searchImageInSavedPage(imageName);
+                    console.log("Saved Page", data);
+                    dispatch(setImgListSavedPage(data.data));
+                    return;
+                }
 
-    //     return () => {
-    //         clearTimeout(timerId);
-    //     };
-    // }, [inputValue]);
+                if (pathname === "/profile" && isPageCreated === true) {
+                    const { data } = await imageApi.searchImage(imageName);
+                    console.log("Created Page", data);
+                    dispatch(setImgListCreatedPage(data.data));
+                    return;
+                }
+            } finally {
+                setIsLoading(false);
+            }
+        }, 400);
 
-    const handleClickResultSearch = (courseCode: string) => {
-        // setIsOpenPopupUser(false);
-        // setInputValue("");
-        // navigate(`/detailcourse/${courseCode}`);
-    };
-
-    const handleLoadMore = () => {
-        // setIsOpenPopupUser(false);
-        // setInputValue("");
-        // navigate("/courses");
-    };
-
-    const content = () => {
-        if (resultSearch.length > 0) {
-            return (
-                <div className="w-[395px] px-3">
-                    <div className="flex items-baseline justify-between ">
-                        <p className="text-sm font-semibold">KHOÁ HỌC</p>
-                        <p onClick={handleLoadMore} className="text-sm cursor-pointer dark:text-white/50 text-black/50">
-                            Xem thêm
-                        </p>
-                    </div>
-                    <hr className="dark:!border-gray-700 border-gray-200 my-2" />
-                    <div className="space-y-3">
-                        {resultSearch?.map((course) => {
-                            return (
-                                <div
-                                    onClick={() => {
-                                        handleClickResultSearch(course._id);
-                                    }}
-                                    key={course._id}
-                                    className="flex items-center gap-2 cursor-pointer"
-                                >
-                                    <div className="w-10 h-10 overflow-hidden rounded-full">
-                                        <img className="object-cover w-full h-full" src={course.image} alt="" />
-                                    </div>
-                                    <p>{course.courseName}</p>
-                                </div>
-                            );
-                        })}
-                    </div>
-                </div>
-            );
-        }
-        if (resultSearch.length === 0) {
-            return (
-                <div className="w-[395px] px-3">
-                    <Empty image={Empty.PRESENTED_IMAGE_SIMPLE} description={"Không tìm thấy khoá học"} />
-                </div>
-            );
-        }
-    };
+        return () => {
+            clearTimeout(timerId);
+        };
+    }, [inputValue]);
 
     const prefix = () => {
         if (isLoading) return <LoadingOutlined className="mr-2 font-bold" />;
         if (!isLoading) return <SearchOutlined className="mr-2 font-bold" />;
     };
 
-    const onClick = (e: MouseEvent<HTMLInputElement>) => {
-        const value = (e.target as HTMLInputElement).value.trim();
-        if (value !== "") setIsOpenPopupUser(true);
-    };
-
     return (
-        <Popover onOpenChange={handleOpenChange} open={isOpenPopupUser} placement="topLeft" content={content} trigger="contextMenu" arrow={false} className="w-[420px]">
-            <div className="rounded-full border-2 dark:border-slate-600 border-slate-300 px-1 w-[420px]">
-                <Input value={inputValue} onClick={onClick} onChange={onChange} bordered={false} size="large" placeholder="Tìm kiếm khoá học" prefix={prefix()} />
-            </div>
-        </Popover>
+        <div className="rounded-full  px-1 flex-1 bg-[#e9e9e9]">
+            <Input className="" value={inputValue} onChange={onChange} bordered={false} size="large" placeholder="Tìm kiếm" prefix={prefix()} />
+        </div>
     );
 }
 export default Search;

@@ -5,9 +5,10 @@ import I_initialState from "../../interfaces/initialStateInterface";
 import { I_login_req, I_register_req } from "../../interfaces/userManagementInterface";
 import { DispatchType } from "../store";
 import { userApi } from "../../api/userApi";
-import { success } from "../../helpers/message";
+import { error, success } from "../../helpers/message";
 import { setIsOpenModalAuthREDU } from "./modalSlice";
 import { decodeJWT } from "../../helpers/jwt";
+import { setIsLoadingBtnREDU } from "./loadingSlice";
 
 const initialState: I_initialState["userManagementSlice"] = {
     userLogin: lcStorage.get(USER_LOGIN),
@@ -16,8 +17,6 @@ const initialState: I_initialState["userManagementSlice"] = {
         password: "",
         userName: "",
     },
-    userList: [],
-    userInfo: null,
 };
 
 const userManagementSlice = createSlice({
@@ -38,16 +37,10 @@ const userManagementSlice = createSlice({
         setAutofillREDU: (state, { payload }) => {
             state.autofill = payload;
         },
-        setUserListREDU: (state, { payload }) => {
-            state.userList = payload;
-        },
-        setUserInfoREDU: (state, { payload }) => {
-            state.userInfo = payload;
-        },
     },
 });
 
-export const { setUserInfoREDU, setUserListREDU, setAutofillREDU, loginREDU, updateUserLoginREDU, setIsPageLoginREDU } = userManagementSlice.actions;
+export const { setAutofillREDU, loginREDU, updateUserLoginREDU, setIsPageLoginREDU } = userManagementSlice.actions;
 
 export default userManagementSlice.reducer;
 
@@ -57,6 +50,8 @@ export default userManagementSlice.reducer;
 export const registerMID = (requestData: I_register_req) => {
     return async (dispatch: DispatchType) => {
         try {
+            dispatch(setIsLoadingBtnREDU(true));
+
             const { data, status } = await userApi.register(requestData);
 
             console.log("registerMID", { data, status });
@@ -68,6 +63,9 @@ export const registerMID = (requestData: I_register_req) => {
             dispatch(setIsPageLoginREDU(true));
         } catch (err) {
             console.log(err);
+            error("Đăng ký không thành công");
+        } finally {
+            dispatch(setIsLoadingBtnREDU(false));
         }
     };
 };
@@ -76,6 +74,8 @@ export const registerMID = (requestData: I_register_req) => {
 export const loginMID = (requestData: I_login_req) => {
     return async (dispatch: DispatchType) => {
         try {
+            dispatch(setIsLoadingBtnREDU(true));
+
             const { data, status } = await userApi.login(requestData);
 
             console.log("loginMID", { data, status });
@@ -96,6 +96,9 @@ export const loginMID = (requestData: I_login_req) => {
             dispatch(setIsOpenModalAuthREDU(false));
         } catch (err) {
             console.log(err);
+            error("Đăng nhập không thành công");
+        } finally {
+            dispatch(setIsLoadingBtnREDU(false));
         }
     };
 };

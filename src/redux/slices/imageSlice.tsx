@@ -1,12 +1,16 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { DispatchType } from "../store";
 import { imageApi } from "../../api/imageApi";
-import { success } from "../../helpers/message";
+import { error, success } from "../../helpers/message";
 import { navigate } from "../../helpers/navigate";
+import { setIsLoadingBtnREDU, setIsLoadingPageREDU } from "./loadingSlice";
+import { userApi } from "../../api/userApi";
 
 const initialState = {
     isPageCreated: false,
     imgListHomePage: [],
+    imgListSavedPage: [],
+    imgListCreatedPage: [],
 };
 
 const imageSlice = createSlice({
@@ -19,10 +23,16 @@ const imageSlice = createSlice({
         setImgListHomePage: (state, { payload }) => {
             state.imgListHomePage = payload;
         },
+        setImgListSavedPage: (state, { payload }) => {
+            state.imgListSavedPage = payload;
+        },
+        setImgListCreatedPage: (state, { payload }) => {
+            state.imgListCreatedPage = payload;
+        },
     },
 });
 
-export const { setIsPageCreated, setImgListHomePage } = imageSlice.actions;
+export const { setImgListCreatedPage, setImgListSavedPage, setIsPageCreated, setImgListHomePage } = imageSlice.actions;
 
 export default imageSlice.reducer;
 
@@ -30,6 +40,8 @@ export default imageSlice.reducer;
 export const createImageMID = (requestData: FormData) => {
     return async (dispatch: DispatchType) => {
         try {
+            dispatch(setIsLoadingBtnREDU(true));
+
             const { data, status } = await imageApi.createImage(requestData);
 
             console.log("createImageMID", { data, status });
@@ -39,38 +51,69 @@ export const createImageMID = (requestData: FormData) => {
             navigate("/profile");
 
             dispatch(setIsPageCreated(true));
-        } catch (error) {
-            console.log(error);
+        } catch (err) {
+            console.log(err);
+            error("Thêm hình ảnh không thành công");
+        } finally {
+            dispatch(setIsLoadingBtnREDU(false));
         }
     };
 };
 
-//setImgListSavedHomePageMID
-export const setImgListSavedHomePageMID = () => {
-    return async (dispatch: DispatchType) => {
-        try {
-            const { data, status } = await imageApi.getImgListSaved();
-
-            console.log("setImgListSavedHomePageMID", { data, status });
-
-            dispatch(setImgListHomePage(data.data));
-        } catch (error) {
-            console.log(error);
-        }
-    };
-};
 
 //setImgListHomePageMID
-export const setImgListHomePageMID = () => {
+export const setImgListHomePageMID = (flag: string) => {
     return async (dispatch: DispatchType) => {
         try {
+            if (flag === "page") dispatch(setIsLoadingPageREDU(true));
+
             const { data, status } = await imageApi.getImgList();
 
             console.log("setImgListHomePageMID", { data, status });
 
             dispatch(setImgListHomePage(data.data));
-        } catch (error) {
-            console.log(error);
+        } catch (err) {
+            console.log(err);
+        } finally {
+            if (flag === "page") dispatch(setIsLoadingPageREDU(false));
+        }
+    };
+};
+
+//setImgListSavedPageMID
+export const setImgListSavedPageMID = (flag: string) => {
+    return async (dispatch: DispatchType) => {
+        try {
+            if (flag === "page") dispatch(setIsLoadingPageREDU(true));
+
+            const { data, status } = await userApi.getListImageSaved();
+
+            console.log("setImgListSavedPageMID", { data, status });
+
+            dispatch(setImgListSavedPage(data.data));
+        } catch (err) {
+            console.log(err);
+        } finally {
+            if (flag === "page") dispatch(setIsLoadingPageREDU(false));
+        }
+    };
+};
+
+//setImgListCreatedPageMID
+export const setImgListCreatedPageMID = (flag: string) => {
+    return async (dispatch: DispatchType) => {
+        try {
+            if (flag === "page") dispatch(setIsLoadingPageREDU(true));
+
+            const { data, status } = await userApi.getListImageCreacted();
+
+            console.log("setImgListCreatedPageMID", { data, status });
+
+            dispatch(setImgListCreatedPage(data.data));
+        } catch (err) {
+            console.log(err);
+        } finally {
+            if (flag === "page") dispatch(setIsLoadingPageREDU(false));
         }
     };
 };
