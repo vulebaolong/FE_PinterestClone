@@ -10,14 +10,9 @@ import {
     setImgListCreatedPageMID,
     setImgListHomePage,
     setImgListHomePageMID,
-    setImgListSavedHomePageMID,
     setImgListSavedPage,
     setImgListSavedPageMID,
 } from "../../redux/slices/imageSlice";
-// import { courseApi } from "../../api/courseApi";
-// import { I_resultSearch } from "../../interfaces/courseManagementInterface";
-// import { navigate } from "../../helpers/navigate";
-// import { DEBOUNCE_TIMEOUT } from "../../contants/courseManagementContants";
 
 function Search() {
     const dispatch: DispatchType = useDispatch();

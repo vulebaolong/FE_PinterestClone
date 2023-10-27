@@ -82,7 +82,7 @@ function MasonryItem({ image }: I_props) {
 
             if (pathname === "/profile" && isPageCreated === true) return dispatch(setImgListCreatedPageMID("update"));
 
-            if (pathname === "/") return dispatch(setImgListSavedHomePageMID("update"));
+            if (pathname === "/") return dispatch(setImgListHomePageMID("update"));
         } catch (err) {
             error("Bỏ lưu hình ảnh không thành công");
         } finally {
