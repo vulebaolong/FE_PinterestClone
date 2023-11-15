@@ -25,7 +25,7 @@ function Header() {
         navigate("/create-image");
     };
     return (
-        <header className="fixed z-40 flex items-center justify-between w-full p-4 bg-white gap-7 h-header">
+        <header className="fixed z-40 flex flex-wrap items-center justify-between w-full gap-2 p-4 bg-white lg:gap-7 h-header">
             <div className="flex items-center">
                 <Logo />
                 <Button onClick={handleClickCreateImage} type="secondary">

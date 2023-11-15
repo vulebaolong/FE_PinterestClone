@@ -13,7 +13,7 @@ function UserControll() {
 
     if (userLogin)
         jsx = (
-            <div className="hidden lg:block">
+            <div>
                 <Logged userLogin={userLogin} />
             </div>
         );

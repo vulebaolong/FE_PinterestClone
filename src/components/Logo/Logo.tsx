@@ -2,7 +2,7 @@ import LogoIcon from "./LogoIcon";
 
 function Logo() {
     return (
-        <a href="/" className="w-fit">
+        <a href="/" className="hidden w-fit lg:block">
             <div className="flex flex-row items-center gap-1 px-3">
                 <LogoIcon />
                 <div
