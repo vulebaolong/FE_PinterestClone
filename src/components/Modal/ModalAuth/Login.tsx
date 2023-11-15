@@ -43,10 +43,6 @@ function Login() {
         dispatch(setAutofillREDU({ userName: "khachhang", password: "123456" }));
     };
 
-    const handleAdmin = () => {
-        dispatch(setAutofillREDU({ userName: "quantri", password: "123456" }));
-    };
-
     return (
         <>
             <div className="">
@@ -69,7 +65,13 @@ function Login() {
                         hasFeedback
                         className="mb-[10px]"
                     >
-                        <Input className={`${style.inputAuth} ${classInput}`} size="large" prefix={<UserOutlined />} placeholder="Tài khoản" autoComplete="username" />
+                        <Input
+                            className={`${style.inputAuth} ${classInput}`}
+                            size="large"
+                            prefix={<UserOutlined />}
+                            placeholder="Tài khoản"
+                            autoComplete="username"
+                        />
                     </Form.Item>
 
                     {/* MẬT KHẨU */}
@@ -110,10 +112,7 @@ function Login() {
 
                     <div className="flex items-center gap-5">
                         <Button onClick={handleCustomer} className="w-full px-0 !border-slate-500" htmlFor="button" type="secondary">
-                            Khách hàng
-                        </Button>
-                        <Button onClick={handleAdmin} className="w-full px-0 !border-slate-500" htmlFor="button" type="secondary">
-                            Quản trị
+                            Tài khoản dùng thử
                         </Button>
                     </div>
                 </Form>
@@ -121,7 +120,10 @@ function Login() {
             <div className=" mt-11">
                 <p className="text-base text-center">
                     <span>Bạn chưa có tài khoản? </span>
-                    <span onClick={handleNavigateLogin} className="font-semibold cursor-pointer text-primary hover:text-primary_hover active:text-primary_active">
+                    <span
+                        onClick={handleNavigateLogin}
+                        className="font-semibold cursor-pointer text-primary hover:text-primary_hover active:text-primary_active"
+                    >
                         Đăng ký
                     </span>
                 </p>

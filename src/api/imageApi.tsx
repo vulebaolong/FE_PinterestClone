@@ -29,4 +29,7 @@ export const imageApi = {
     searchImageInSavedPage: (nameImage: string) => {
         return axios.get(`/image/search-saved?searchText=${nameImage}`);
     },
+    searchImageInCreatedPage: (nameImage: string) => {
+        return axios.get(`/image/search-created?searchText=${nameImage}`);
+    },
 };

@@ -63,7 +63,7 @@ function Search() {
                 }
 
                 if (pathname === "/profile" && isPageCreated === true) {
-                    const { data } = await imageApi.searchImage(imageName);
+                    const { data } = await imageApi.searchImageInCreatedPage(imageName);
                     console.log("Created Page", data);
                     dispatch(setImgListCreatedPage(data.data));
                     return;
