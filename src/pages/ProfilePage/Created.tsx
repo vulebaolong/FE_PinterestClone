@@ -1,7 +1,5 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import MasonryLayer from "../../components/Masonry/MasonryLayer";
-import { I_img } from "../HomePage/HomePage";
-import { userApi } from "../../api/userApi";
 import Loading from "../../components/Loading/Loading";
 import { useDispatch, useSelector } from "react-redux";
 import { DispatchType, RootState } from "../../redux/store";

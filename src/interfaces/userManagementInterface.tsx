@@ -65,3 +65,10 @@ export interface I_userInfo {
     avatar: string;
     bannerProfile: string;
 }
+
+export interface I_userUpdate {
+    userName?: string;
+    email?: string;
+    phoneNumber?: string;
+    fullName?: string;
+}

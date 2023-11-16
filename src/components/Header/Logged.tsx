@@ -6,7 +6,6 @@ import { I_userLogin } from "../../interfaces/userManagementInterface";
 import Button from "../Button/Button";
 
 function Logged({ userLogin }: { userLogin: I_userLogin }) {
-    console.log(userLogin);
     const handleClickLogout = () => {
         lcStorage.remove(USER_LOGIN);
         lcStorage.remove(ACCESS_TOKEN);

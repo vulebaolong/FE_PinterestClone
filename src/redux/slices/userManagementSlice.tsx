@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import { ACCESS_TOKEN, USER_LOGIN } from "../../contants/userContants";
 import { lcStorage } from "../../helpers/localStorage";
 import I_initialState from "../../interfaces/initialStateInterface";
-import { I_login_req, I_register_req } from "../../interfaces/userManagementInterface";
+import { I_login_req, I_register_req, I_userUpdate } from "../../interfaces/userManagementInterface";
 import { DispatchType } from "../store";
 import { userApi } from "../../api/userApi";
 import { error, success } from "../../helpers/message";
@@ -97,6 +97,37 @@ export const loginMID = (requestData: I_login_req) => {
         } catch (err) {
             console.log(err);
             error("Đăng nhập không thành công");
+        } finally {
+            dispatch(setIsLoadingBtnREDU(false));
+        }
+    };
+};
+
+//updateUserMid
+export const updateUserMid = (requestData: I_userUpdate) => {
+    return async (dispatch: DispatchType) => {
+        try {
+            dispatch(setIsLoadingBtnREDU(true));
+
+            const { data, status } = await userApi.updateUser(requestData);
+
+            console.log("updateUserMid", { data, status });
+
+            success("Chỉnh sửa thông tin thành công");
+
+            const token = data.data;
+
+            const decodedToken = decodeJWT(token);
+
+            //lưu localStorage
+            lcStorage.set(USER_LOGIN, decodedToken);
+
+            lcStorage.set(ACCESS_TOKEN, token);
+
+            dispatch(loginREDU(decodedToken));
+        } catch (err) {
+            console.log(err);
+            error("Chỉnh sửa thông tin không thành công");
         } finally {
             dispatch(setIsLoadingBtnREDU(false));
         }

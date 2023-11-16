@@ -6,6 +6,7 @@ import { Avatar } from "antd";
 import { MailOutlined, PhoneOutlined } from "@ant-design/icons";
 import Button from "../../components/Button/Button";
 import { setIsPageCreated } from "../../redux/slices/imageSlice";
+import { navigate } from "../../helpers/navigate";
 
 function ProfilePage() {
     const { isPageCreated } = useSelector((state: RootState) => state.imageSlice);
@@ -18,6 +19,9 @@ function ProfilePage() {
     const handleSaved = () => {
         dispatch(setIsPageCreated(false));
     };
+    const handleUpdateUser = () => { 
+        navigate('/update-user')
+     }
     return (
         <>
             <div className="flex flex-col items-center justify-center gap-2">
@@ -32,6 +36,11 @@ function ProfilePage() {
                 <p className="text-base font-normal text-text">
                     <PhoneOutlined /> {userLogin.phoneNumber}
                 </p>
+            </div>
+            <div className="flex items-center justify-center mt-5">
+                <Button className={isPageCreated ? "!bg-gray-400" : ""} onClick={handleUpdateUser} type="secondary">
+                    Chỉnh sửa hồ sơ
+                </Button>
             </div>
             <div className="flex items-center justify-center gap-2 py-3 mt-7">
                 <Button className={isPageCreated ? "!bg-gray-400" : ""} onClick={handleCreated} type="secondary">

@@ -10,6 +10,7 @@ import { message } from "antd";
 import { setMessageApi } from "./helpers/message";
 import CreateImagePage from "./pages/CreateImagePage/CreateImagePage";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
+import UpdateUserPage from "./pages/UpdateUserPage/UpdateUserPage";
 
 function App() {
     const navigate = useNavigate();
@@ -35,6 +36,7 @@ function App() {
                     <Route path="detail/:id" element={<DetailPage />} />
                     <Route path="create-image" element={<CreateImagePage />} />
                     <Route path="profile" element={<ProfilePage />}></Route>
+                    <Route path="update-user" element={<UpdateUserPage />}></Route>
                 </Route>
 
                 {/* OTHER */}

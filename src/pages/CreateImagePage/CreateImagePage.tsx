@@ -86,6 +86,7 @@ function CreateImagePage() {
                 </Button>
             </div>
             <div className="max-w-lg mx-auto">
+                <h2 className="mb-20 text-3xl font-black">Thêm hình ảnh mới</h2>
                 <Form form={form} layout="vertical" onFinish={onFinish} onFinishFailed={onFinishFailed}>
                     {/* NAME IMAGE */}
                     <Form.Item

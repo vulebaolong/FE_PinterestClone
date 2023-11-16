@@ -70,7 +70,7 @@ function MasonryItem({ image }: I_props) {
         try {
             e.stopPropagation();
 
-            console.log(`bỏ lưu ${image.imageId}`);
+            // console.log(`bỏ lưu ${image.imageId}`);
 
             dispatch(setIsLoadingBtnREDU(true));
 

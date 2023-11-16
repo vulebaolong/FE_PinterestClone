@@ -1,5 +1,5 @@
 import axios from "axios";
-import { I_login_req, I_register_req } from "../interfaces/userManagementInterface";
+import { I_login_req, I_register_req, I_userUpdate } from "../interfaces/userManagementInterface";
 
 export const userApi = {
     login: (data: I_login_req) => {
@@ -13,5 +13,8 @@ export const userApi = {
     },
     getListImageCreacted: () => {
         return axios.get(`/user/images-created`);
+    },
+    updateUser: (data: I_userUpdate) => {
+        return axios.put(`/user/update`, data);
     },
 };
